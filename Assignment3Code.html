@@ -2,9 +2,9 @@
 <html>
 <meta charset="utf-8">
 <style>
-  .symbol {
-    fill-opacity: .8;
-    stroke: #fff;
+  svg {
+    width: 1280px;
+    height: 720px;
   }
 </style>
 
@@ -15,21 +15,82 @@
 <script src="http://d3js.org/d3.v6.min.js"></script>
 
 <script>
-
-  var width = 960, height = 500;
-  var svg = d3.select("body").append("svg")
-      .attr("width", width)
-      .attr("height", height);
+  var total_width = 1280, total_height = 720;
+  var margin = {top: 20, right: 20, bottom: 20, left: 20}, width = total_width - margin.left - margin.right, height = total_height - margin.top - margin.bottom
+  var svg1 = d3.select("svg").append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+  var svg2 = d3.select("svg").append("g").attr("transform", "translate(" + margin.left + "," + margin.top*10 + ")");
 
   let data;
+  var game_titles=[], max_players=[], genre_all=[], genre_one=[], publishers_all=[], publishers_one=[], review_scores=[], sales=[], used_price=[], release_console=[], rating=[], release_year=[], playtime=[];
   ready();
 
   async function ready() {
       // load files async; store the values so we can use them later
       data = await d3.json("videogame_data.json");
-
-      console.log(data.game[0]);
+      split_data();
+      //test
+      make_plot(svg1, playtime, sales); 
+      make_plot(svg2, playtime, review_scores);
     }
+
+  function make_plot(svg_to_use, x_feature, y_feature) 
+  {
+    var scaling = (d3.max(x_feature) > d3.max(y_feature) ? width / d3.max(x_feature) : height / d3.max(y_feature));
+    var new_width = d3.max(x_feature) * scaling;
+    var new_height = d3.max(y_feature) * scaling;
+
+    var xScale = d3.scaleLinear()
+    .domain([d3.min(x_feature), d3.max(x_feature)]) 
+    .range([0, new_width]);
+
+    var yScale = d3.scaleLinear()
+    .domain([d3.min(y_feature), d3.max(y_feature)]) 
+    .range([new_height, 0]);
+
+    var xAxis = d3.axisBottom().scale(xScale); 
+    var yAxis = d3.axisLeft().scale(yScale);
+
+    svg_to_use.append("g").call(xAxis).attr("transform", "translate(0," + new_height + ")");
+    svg_to_use.append("g").call(yAxis);
+
+    var dataset_to_use = make_dataset(x_feature, y_feature);
+    svg_to_use.selectAll("circle") 
+      .data(dataset_to_use)
+      .enter().append("circle") 
+          .attr("cx", function(d) { return xScale(d[0]); })
+          .attr("cy", function(d) { return yScale(d[1]); })
+          .attr("r",  5);     
+  }
+
+  function make_dataset(x_feature, y_feature)
+  {
+    var dataset = []
+    for (i=0; i<x_feature.length; i++)
+    {
+      dataset.push([x_feature[i], y_feature[i]]);
+    }
+    return dataset;
+  }
+
+  function split_data() 
+  {
+    for (i=0; i<data.game.length; i++)
+      {
+        game_titles.push(data.game[i].name);
+        max_players.push(data.game[i].max_players);
+        genre_all.push(data.game[i].genre_all);
+        genre_one.push(data.game[i].genre_one);
+        publishers_all.push(data.game[i].publishers_all);
+        publishers_one.push(data.game[i].publishers_one);
+        review_scores.push(data.game[i].review_score);
+        sales.push(data.game[i].sales);
+        used_price.push(data.game[i].used_price);
+        release_console.push(data.game[i].release_console);
+        rating.push(data.game[i].rating);
+        release_year.push(data.game[i].release_year);
+        playtime.push(data.game[i].length);
+      } 
+  }
 
 </script>
 
