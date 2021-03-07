@@ -18,18 +18,18 @@ def main():
                 all_values['game'].append(
                     {
                         'name': row[0],
-                        'max_players': row[1],
+                        'max_players': int(row[1]),
                         'genre_all': row[2],
                         'genre_one': row[3],
                         'publishers_all': row[4],
                         'publishers_one': row[5],
-                        'review_score': row[6],
-                        'sales': row[7],
-                        'used_price': row[8],
+                        'review_score': int(row[6]),
+                        'sales': float(row[7]),
+                        'used_price': float(row[8]),
                         'release_console': row[9],
                         'rating': row[10],
-                        'release_year': row[11],
-                        'length': row[12]
+                        'release_year': int(row[11]),
+                        'length': float(row[12])
                     }
                 )
 
