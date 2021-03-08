@@ -3,7 +3,7 @@
 <meta charset="utf-8">
 <style>
   svg {
-    width: 1280px;
+    width: 1500px;
     height: 720px;
   }
 </style>
@@ -23,13 +23,15 @@
 </FORM>
 
 <script>
-  var total_width = 1280, total_height = 720;
-  var margin = {top: 20, right: 20, bottom: 20, left: 20}, width = total_width - margin.left - margin.right, height = total_height - margin.top - margin.bottom
-  var svg1 = d3.select("svg").append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-  var svg2 = d3.select("svg").append("g").attr("transform", "translate(" + margin.left + "," + margin.top*10 + ")");
+  var total_width = 1500, total_height = 720;
+  var margin = {top: 20, right: 20, bottom: 20, left: 20}, left_space = 100, top_space = 0;
+  var width = 0.9 * (total_width - margin.left - margin.right) / 2, height = 0.9 * (total_height - margin.top - margin.bottom);
+  var svg_sales = d3.select("svg").append("g").attr("transform", "translate(" + (left_space + margin.left) + "," + (top_space + margin.top) + ")");
+  var svg_reviewscores = d3.select("svg").append("g").attr("transform", "translate(" + (left_space + margin.left + width + margin.right + margin.left) + "," + (top_space + margin.top) + ")");
 
   let data;
   var game_titles=[], max_players=[], genre_all=[], genre_one=[], publishers_all=[], publishers_one=[], review_scores=[], sales=[], used_price=[], release_console=[], rating=[], release_year=[], playtime=[];
+
   ready();
 
   async function ready() {
@@ -37,95 +39,70 @@
       data = await d3.json("videogame_data.json");
       split_data();
       //test
-      make_plot(svg1, playtime, sales); 
-      make_plot(svg2, playtime, review_scores);
+      make_plot(svg_sales, playtime, sales); 
+      make_plot(svg_reviewscores, playtime, review_scores);
     }
 
   function make_plot(svg_to_use, x_feature, y_feature) 
   {
-    var scaling = (d3.max(x_feature) > d3.max(y_feature) ? width / d3.max(x_feature) : height / d3.max(y_feature));
-    var new_width = d3.max(x_feature) * scaling;
-    var new_height = d3.max(y_feature) * scaling;
+    var scaling = get_scaling(x_feature, y_feature);
+    var xAxis = d3.axisBottom().scale(scaling.x); 
+    var yAxis = d3.axisLeft().scale(scaling.y);
 
-    var xScale = d3.scaleLinear()
-    .domain([d3.min(x_feature), d3.max(x_feature)]) 
-    .range([0, new_width]);
-
-    var yScale = d3.scaleLinear()
-    .domain([d3.min(y_feature), d3.max(y_feature)]) 
-    .range([new_height, 0]);
-
-    var xAxis = d3.axisBottom().scale(xScale); 
-    var yAxis = d3.axisLeft().scale(yScale);
-
-    svg_to_use.append("g").attr("class", "xaxis").call(xAxis).attr("transform", "translate(0," + new_height + ")");
+    svg_to_use.append("g").attr("class", "xaxis").call(xAxis).attr("transform", "translate(0," + height + ")");
     svg_to_use.append("g").attr("class", "yaxis").call(yAxis);
 
     var dataset_to_use = make_dataset(x_feature, y_feature);
     svg_to_use.selectAll("circle") 
       .data(dataset_to_use)
       .enter().append("circle") 
-          .attr("cx", function(d) { return xScale(d[0]); })
-          .attr("cy", function(d) { return yScale(d[1]); })
+          .attr("cx", function(d) { return scaling.x(d[0]); })
+          .attr("cy", function(d) { return scaling.y(d[1]); })
           .attr("r",  5);     
   }
 
   function update_plots(x_feature){
-    var data1 = make_dataset(x_feature,sales);
-    var data2 = make_dataset(x_feature,review_scores);
-    
-    var scaling1 = (d3.max(x_feature) > d3.max(sales) ? width / d3.max(x_feature) : height / d3.max(sales));
-    var new_width1 = d3.max(x_feature) * scaling1;
-    var new_height1 = d3.max(sales) * scaling1;
-
-    var xScale1 = d3.scaleLinear()
-    .domain([d3.min(x_feature), d3.max(x_feature)]) 
-    .range([0, new_width1]);
-
-    var yScale1 = d3.scaleLinear()
-    .domain([d3.min(sales), d3.max(sales)]) 
-    .range([new_height1, 0]);
-
-    var xAxis1 = d3.axisBottom().scale(xScale1); 
-    var yAxis1 = d3.axisLeft().scale(yScale1);
-
-    var scaling2 = (d3.max(x_feature) > d3.max(review_scores) ? width / d3.max(x_feature) : height / d3.max(review_scores));
-    var new_width2 = d3.max(x_feature) * scaling2;
-    var new_height2 = d3.max(review_scores) * scaling2;
-
-    var xScale2 = d3.scaleLinear()
-    .domain([d3.min(x_feature), d3.max(x_feature)]) 
-    .range([0, new_width2]);
-
-    var yScale2 = d3.scaleLinear()
-    .domain([d3.min(review_scores), d3.max(review_scores)]) 
-    .range([new_height2, 0]);
-
-    var xAxis2 = d3.axisBottom().scale(xScale2); 
-    var yAxis2 = d3.axisLeft().scale(yScale2);
-
-    svg1.selectAll(".yaxis")
-        .call(yAxis1);
-    svg1.selectAll(".xaxis")
-        .call(xAxis1)
-        .attr("transform", "translate(0," + new_height1 + ")");
-    svg1.selectAll('circle')
-      .data(data1)
-      .attr("cx", function(d) { return xScale1(d[0]); })
-      .attr("cy", function(d) { return yScale1(d[1]); });
-    
-    svg2.selectAll(".yaxis")
-        .call(yAxis2);
-    svg2.selectAll(".xaxis")
-        .call(xAxis2)
-        .attr("transform", "translate(0," + new_height2 + ")");
-    svg2.selectAll('circle')
-      .data(data2)
-      .attr("cx", function(d) { return xScale2(d[0]); })
-      .attr("cy", function(d) { return yScale2(d[1]); });
-
+    svg_sales.selectAll("*").remove();
+    svg_reviewscores.selectAll("*").remove();
+    make_plot(svg_sales, x_feature, sales); 
+    make_plot(svg_reviewscores, x_feature, review_scores);
   }
 
+  function get_scaling(x_feature, y_feature)
+  {
+    /*var base_scaling = (d3.max(x_feature) > d3.max(y_feature) ? width / d3.max(x_feature) : height / d3.max(y_feature));
+    var new_width = d3.max(x_feature) * base_scaling;
+    var new_height = d3.max(y_feature) * base_scaling;*/
+
+    //Get correct scaling for the given feature
+    switch(x_feature[0])
+    {
+      case playtime[0]:
+        var xScale = d3.scaleLinear()
+        .domain([d3.min(x_feature), d3.max(x_feature)]) 
+        .range([0, width]);
+        var yScale = d3.scaleLinear()
+        .domain([d3.min(y_feature), d3.max(y_feature)]) 
+        .range([height, 0]);
+        break;
+      case used_price[0]:
+        //something
+        break;
+      case genre_one[0]:
+        //something
+        break;
+      case publishers_one[0]:
+        //something
+        break;
+      case release_console[0]:
+        //something
+        break;
+      default:
+        break;
+    }
+
+    return {x: xScale, y: yScale};
+  }
 
   function make_dataset(x_feature, y_feature)
   {
