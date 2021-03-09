@@ -34,7 +34,7 @@
   var all_genres = ["Simulation", "Racing / Driving", "Role-Playing (RPG)", "Action", "Sports", "Educational", "Strategy", "Adventure"];
   var all_publishers = ["Nintendo", "Rockstar", "Microsoft", "Activision", "Sony", "EA", "Ubisoft", "Disney", "2K", "Midway",
              "Sega", "Capcom", "THQ", "Null", "SquareEnix", "Konami", "Namco", "Eidos", "Atari"];
-  var all_consoles = ["Nintendo Wii", "X360", "Nintendo DS", "Playstation 3", "Sony PSP"];
+  var all_consoles = ["Nintendo Wii", "X360", "Nintendo DS", "PlayStation 3", "Sony PSP"];
   ready();
 
   async function ready() {
@@ -97,19 +97,25 @@
         .range([height, 0]);
         break;
       case genre_one[0]:
-        /*var xScale = d3.scale.ordinal()
-        .domain()
-        .range()
+        var xScale = d3.scaleOrdinal()
+        .domain(all_genres)
+        .range(make_ordinal_scale(x_feature));
         var yScale = d3.scaleLinear()
         .domain([d3.min(y_feature), d3.max(y_feature)]) 
-        .range([height, 0]);*/
+        .range([height, 0]);
         break;
       case publishers_one[0]:
+        var xScale = d3.scaleOrdinal()
+        .domain(all_publishers)
+        .range(make_ordinal_scale(x_feature));
         var yScale = d3.scaleLinear()
         .domain([d3.min(y_feature), d3.max(y_feature)]) 
         .range([height, 0]);
         break;
       case release_console[0]:
+        var xScale = d3.scaleOrdinal()
+        .domain(all_consoles)
+        .range(make_ordinal_scale(x_feature));
         var yScale = d3.scaleLinear()
         .domain([d3.min(y_feature), d3.max(y_feature)]) 
         .range([height, 0]);
@@ -149,6 +155,28 @@
         release_year.push(data.game[i].release_year);
         playtime.push(data.game[i].length);
       } 
+  }
+
+  function make_ordinal_scale(feature){
+    switch(feature[0]){
+      case genre_one[0]:
+        var lst = all_genres;
+        break;
+      case publishers_one[0]:
+        var lst = all_publishers;
+        break;
+      case release_console[0]:
+        var lst = all_consoles;
+        break;
+      default:
+        break;
+    }
+    var interval_size = width/lst.length;
+    var result = [];
+    for (i = 1; i<=feature.length; i++){
+      result.push(i*interval_size);
+    }
+    return result;
   }
 
 </script>
