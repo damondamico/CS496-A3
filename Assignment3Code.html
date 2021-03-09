@@ -15,11 +15,11 @@
 <script src="http://d3js.org/d3.v6.min.js"></script>
 
 <FORM>
-  <INPUT TYPE="Button" value="Average Play Time" onclick="update_plots(playtime)"/>
-  <INPUT TYPE="Button" value="Used Price" onclick="update_plots(used_price)"/>
-  <INPUT TYPE="Button" value="Genre" onclick="update_plots(genre_one)"/>
-  <INPUT TYPE="Button" value="Publisher" onclick="update_plots(publishers_one)"/>
-  <INPUT TYPE="Button" value="Platform" onclick="update_plots(release_console)"/>
+  <INPUT TYPE="Button" value="Average Play Time" onclick="update_plots(1)"/>
+  <INPUT TYPE="Button" value="Used Price" onclick="update_plots(2)"/>
+  <INPUT TYPE="Button" value="Genre" onclick="update_plots(3)"/>
+  <INPUT TYPE="Button" value="Publisher" onclick="update_plots(4)"/>
+  <INPUT TYPE="Button" value="Platform" onclick="update_plots(5)"/>
 </FORM>
 
 <script>
@@ -35,12 +35,14 @@
   var all_publishers = ["Nintendo", "Rockstar", "Microsoft", "Activision", "Sony", "EA", "Ubisoft", "Disney", "2K", "Midway",
              "Sega", "Capcom", "THQ", "Null", "SquareEnix", "Konami", "Namco", "Eidos", "Atari"];
   var all_consoles = ["Nintendo Wii", "X360", "Nintendo DS", "PlayStation 3", "Sony PSP"];
+  var feature_mapping = {}, current_x_feature = 0;
   ready();
 
   async function ready() {
       // load files async; store the values so we can use them later
       data = await d3.json("videogame_data.json");
       split_data();
+      feature_mapping = {1: playtime, 2: used_price, 3: genre_one, 4: publishers_one, 5: release_console}, current_x_feature = 1;
       //test
       make_plot(svg_sales, playtime, sales); 
       make_plot(svg_reviewscores, playtime, review_scores);
@@ -59,12 +61,17 @@
     svg_to_use.selectAll("circle") 
       .data(dataset_to_use)
       .enter().append("circle") 
-          .attr("cx", function(d) { return scaling.x(d[0]); })
-          .attr("cy", function(d) { return scaling.y(d[1]); })
-          .attr("r",  5);     
+          .attr("cx", function(d) { return scaling.x(d[1]); })
+          .attr("cy", function(d) { return scaling.y(d[2]); })
+          .attr("r",  5)
+          .on("mouseover", handleMouseOver)
+          .on("mouseout", handleMouseOut)
+          .on("click", handleMouseClick);     
   }
 
-  function update_plots(x_feature){
+  function update_plots(new_feature){
+    current_x_feature = new_feature;
+    var x_feature = feature_mapping[current_x_feature];
     svg_sales.selectAll("*").remove();
     svg_reviewscores.selectAll("*").remove();
     make_plot(svg_sales, x_feature, sales); 
@@ -132,7 +139,7 @@
     var dataset = []
     for (i=0; i<x_feature.length; i++)
     {
-      dataset.push([x_feature[i], y_feature[i]]);
+      dataset.push([game_titles[i], x_feature[i], y_feature[i]]);
     }
     return dataset;
   }
@@ -177,6 +184,48 @@
       result.push(i*interval_size);
     }
     return result;
+  }
+
+  function handleMouseOver(d, i) {  // Add interactivity
+    var x_label = "", y_label = "";
+    switch (current_x_feature)
+    {
+      case 1:
+        x_label = "Average playtime";
+        break;
+      case 2:
+        x_label = "Used price";
+        break;
+      case 3:
+        x_label = "Genre";
+        break;
+      case 4:
+        x_label = "Publisher";
+        break;
+      case 5:
+        x_label = "Release console";
+        break;
+      default:
+        break;
+    }
+
+    d3.select(this)
+    .attr("fill", "red")
+    .append("title")
+    .text(function(d) 
+    { 
+      y_label = (d[2] > 17) ? "Rating" : "Sales (in millions)";
+      return ['Game: ' + d[0] + '\n' + x_label + ': ' + d[1] + '\n' + y_label + ': ' + d[2]];  // Value of the text
+    });
+  }
+
+  function handleMouseOut(d, i) {
+    d3.select(this)
+    .attr("fill", "black");
+  }
+
+  function handleMouseClick(d, i){
+    console.log("Click test");
   }
 
 </script>
