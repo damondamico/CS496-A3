@@ -89,16 +89,30 @@
         .range([height, 0]);
         break;
       case used_price[0]:
-        //something
+        var xScale = d3.scaleLinear()
+        .domain([d3.min(x_feature), d3.max(x_feature)]) 
+        .range([0, width]);
+        var yScale = d3.scaleLinear()
+        .domain([d3.min(y_feature), d3.max(y_feature)]) 
+        .range([height, 0]);
         break;
       case genre_one[0]:
-        //something
+        /*var xScale = d3.scale.ordinal()
+        .domain()
+        .range()
+        var yScale = d3.scaleLinear()
+        .domain([d3.min(y_feature), d3.max(y_feature)]) 
+        .range([height, 0]);*/
         break;
       case publishers_one[0]:
-        //something
+        var yScale = d3.scaleLinear()
+        .domain([d3.min(y_feature), d3.max(y_feature)]) 
+        .range([height, 0]);
         break;
       case release_console[0]:
-        //something
+        var yScale = d3.scaleLinear()
+        .domain([d3.min(y_feature), d3.max(y_feature)]) 
+        .range([height, 0]);
         break;
       default:
         break;
