@@ -7,18 +7,21 @@
 <body>
   <link href="style.css" rel="stylesheet">
   <div class="dropdown1">
-    <button class="dropbtn1">Dropdown 1</button>
+    <button class="dropbtn1">Release Year</button>
     <div class="dropdown-content1">
-      <a onclick="update_plots(1)">Test 1</a>
-      <a onclick="update_plots(2)">Test 2</a>
-      <a onclick="update_plots(3)">Test 3</a>
+      <a onclick="filter_plots(1, -1)">All</a>
+      <a onclick="filter_plots(1, 2004)">2004</a>
+      <a onclick="filter_plots(1, 2005)">2005</a>
+      <a onclick="filter_plots(1, 2006)">2006</a>
+      <a onclick="filter_plots(1, 2007)">2007</a>
+      <a onclick="filter_plots(1, 2008)">2008</a>
     </div>
   </div>
   <div class="dropdown2">
     <button class="dropbtn2">Dropdown 2</button>
     <div class="dropdown-content2">
-      <a onclick="update_plots(4)">Test 4</a>
-      <a onclick="update_plots(5)">Test 5</a>
+      <a onclick="update_plots_id(4)">Test 4</a>
+      <a onclick="update_plots_id(5)">Test 5</a>
     </div>
   </div>
 
@@ -28,11 +31,11 @@
 <script src="http://d3js.org/d3.v6.min.js"></script>
 
 <FORM>
-  <INPUT TYPE="Button" value="Average Play Time" onclick="update_plots(1)"/>
-  <INPUT TYPE="Button" value="Used Price" onclick="update_plots(2)"/>
-  <INPUT TYPE="Button" value="Genre" onclick="update_plots(3)"/>
-  <INPUT TYPE="Button" value="Publisher" onclick="update_plots(4)"/>
-  <INPUT TYPE="Button" value="Platform" onclick="update_plots(5)"/>
+  <INPUT TYPE="Button" value="Average Play Time" onclick="update_plots_id(1)"/>
+  <INPUT TYPE="Button" value="Used Price" onclick="update_plots_id(2)"/>
+  <INPUT TYPE="Button" value="Genre" onclick="update_plots_id(3)"/>
+  <INPUT TYPE="Button" value="Publisher" onclick="update_plots_id(4)"/>
+  <INPUT TYPE="Button" value="Platform" onclick="update_plots_id(5)"/>
 </FORM>
 
 <script>
@@ -105,13 +108,57 @@
           .on("click", handleMouseClick);     
   }
 
-  function update_plots(new_feature){
-    current_x_feature = new_feature;
+  function update_plots_id(feature_id){
+    current_x_feature = feature_id;
     var x_feature = feature_mapping[current_x_feature];
     svg_sales.selectAll("*").remove();
     svg_reviewscores.selectAll("*").remove();
     make_plot(svg_sales, x_feature, sales); 
     make_plot(svg_reviewscores, x_feature, review_scores);
+  }
+
+  function update_plots_feature(new_feature){
+    svg_sales.selectAll("*").remove();
+    svg_reviewscores.selectAll("*").remove();
+    make_plot(svg_sales, new_feature, sales); 
+    make_plot(svg_reviewscores, new_feature, review_scores);
+  }
+
+  function filter_plots(filter_feature, values_to_keep)
+  {
+    var filtered_x_feature = [];
+    switch(filter_feature)
+    {
+      case 1: //filter by release year
+        if (values_to_keep == -1) //select all
+          filtered_x_feature = feature_mapping[current_x_feature];
+        else
+        {
+          for (i=0; i<data.game.length; i++)
+          {
+            if (data.game[i].release_year == values_to_keep)
+            {
+              filtered_x_feature.push(feature_mapping[current_x_feature][i]);
+            }
+          }
+        }
+        break;
+      case 2: //filter by publisher
+        
+        break;
+      case 3: //filter by genre
+        
+        break;
+      case 4: //filter by release console
+        
+        break;
+      case 5: //filter by rating
+        ;
+        break;
+      default:
+        break;
+    }
+    update_plots_feature(filtered_x_feature);
   }
 
   function get_scaling(x_feature, y_feature)
@@ -121,9 +168,9 @@
     var new_height = d3.max(y_feature) * base_scaling;*/
 
     //Get correct scaling for the given feature
-    switch(x_feature[0])
+    switch(current_x_feature)
     {
-      case playtime[0]:
+      case 1:
         var xScale = d3.scaleLinear()
         .domain([d3.min(x_feature), d3.max(x_feature)]) 
         .range([0, width]);
@@ -131,7 +178,7 @@
         .domain([d3.min(y_feature), d3.max(y_feature)]) 
         .range([height, 0]);
         break;
-      case used_price[0]:
+      case 2:
         var xScale = d3.scaleLinear()
         .domain([d3.min(x_feature), d3.max(x_feature)]) 
         .range([0, width]);
@@ -139,7 +186,7 @@
         .domain([d3.min(y_feature), d3.max(y_feature)]) 
         .range([height, 0]);
         break;
-      case genre_one[0]:
+      case 3:
         var xScale = d3.scaleOrdinal()
         .domain(all_genres)
         .range(make_ordinal_scale(x_feature));
@@ -147,7 +194,7 @@
         .domain([d3.min(y_feature), d3.max(y_feature)]) 
         .range([height, 0]);
         break;
-      case publishers_one[0]:
+      case 4:
         var xScale = d3.scaleOrdinal()
         .domain(all_publishers)
         .range(make_ordinal_scale(x_feature));
@@ -155,7 +202,7 @@
         .domain([d3.min(y_feature), d3.max(y_feature)]) 
         .range([height, 0]);
         break;
-      case release_console[0]:
+      case 5:
         var xScale = d3.scaleOrdinal()
         .domain(all_consoles)
         .range(make_ordinal_scale(x_feature));
@@ -201,14 +248,14 @@
   }
 
   function make_ordinal_scale(feature){
-    switch(feature[0]){
-      case genre_one[0]:
+    switch(current_x_feature){
+      case 3:
         var lst = all_genres;
         break;
-      case publishers_one[0]:
+      case 4:
         var lst = all_publishers;
         break;
-      case release_console[0]:
+      case 5:
         var lst = all_consoles;
         break;
       default:
