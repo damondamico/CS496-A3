@@ -24,7 +24,7 @@
 
 <script>
   var total_width = 1500, total_height = 720;
-  var margin = {top: 20, right: 20, bottom: 20, left: 20}, left_space = 100, top_space = 0;
+  var margin = {top: 40, right: 20, bottom: 20, left: 20}, left_space = 100, top_space = 0;
   var width = 0.9 * (total_width - margin.left - margin.right) / 2, height = 0.9 * (total_height - margin.top - margin.bottom);
   var svg_sales = d3.select("svg").append("g").attr("transform", "translate(" + (left_space + margin.left) + "," + (top_space + margin.top) + ")");
   var svg_reviewscores = d3.select("svg").append("g").attr("transform", "translate(" + (left_space + margin.left + width + margin.right + margin.left) + "," + (top_space + margin.top) + ")");
@@ -56,6 +56,28 @@
 
     svg_to_use.append("g").attr("class", "xaxis").call(xAxis).attr("transform", "translate(0," + height + ")");
     svg_to_use.append("g").attr("class", "yaxis").call(yAxis);
+
+    labels = get_labels(y_feature)
+
+    svg_to_use.append("text")      // text label for the x axis
+        .attr("x", width / 2 )
+        .attr("y",  height + 40)
+        .style("text-anchor", "middle")
+        .text(labels[0]);
+
+    svg_to_use.append("text")  // Text label for the y axis
+        .attr("transform", "rotate(-90)")
+        .attr("y", 0 - 40)
+        .attr("x",0 - (height / 2))
+        .attr("dy", "1em")
+        .style("text-anchor", "middle")
+        .text(labels[1]);
+
+      svg_to_use.append("text")      // text for the title
+        .attr("x", width / 2 )
+        .attr("y",  margin.top / 4)
+        .style("text-anchor", "middle")
+        .text(labels[0] + ' vs. ' + labels[1]);
 
     var dataset_to_use = make_dataset(x_feature, y_feature);
     svg_to_use.selectAll("circle") 
@@ -180,11 +202,38 @@
     }
     var interval_size = width/lst.length;
     var result = [];
-    for (i = 0; i<feature.length; i++){
+    for (i = 0; i<lst.length; i++){
       result.push(i*interval_size);
     }
     return result;
   }
+
+  function get_labels(y_feature){
+    var x_label = "", y_label = "";
+    switch (current_x_feature)
+    {
+      case 1:
+        x_label = "Average playtime";
+        break;
+      case 2:
+        x_label = "Used price";
+        break;
+      case 3:
+        x_label = "Genre";
+        break;
+      case 4:
+        x_label = "Publisher";
+        break;
+      case 5:
+        x_label = "Release console";
+        break;
+      default:
+        break;
+    }
+    y_label = (y_feature[2] > 17) ? "Rating" : "Sales (in millions)";
+    return [x_label, y_label]
+  }
+
 
   function handleMouseOver(d, i) {  // Add interactivity
     var x_label = "", y_label = "";
