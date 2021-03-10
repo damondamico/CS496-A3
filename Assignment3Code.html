@@ -2,13 +2,26 @@
 <html>
 <meta charset="utf-8">
 <style>
-  svg {
-    width: 1500px;
-    height: 720px;
-  }
 </style>
 
 <body>
+  <link href="style.css" rel="stylesheet">
+  <div class="dropdown1">
+    <button class="dropbtn1">Dropdown 1</button>
+    <div class="dropdown-content1">
+      <a onclick="update_plots(1)">Test 1</a>
+      <a onclick="update_plots(2)">Test 2</a>
+      <a onclick="update_plots(3)">Test 3</a>
+    </div>
+  </div>
+  <div class="dropdown2">
+    <button class="dropbtn2">Dropdown 2</button>
+    <div class="dropdown-content2">
+      <a onclick="update_plots(4)">Test 4</a>
+      <a onclick="update_plots(5)">Test 5</a>
+    </div>
+  </div>
+
   <svg></svg>
 </body>
 
@@ -25,6 +38,7 @@
 </FORM>
 
 <script>
+  //Server Stuff: python -m http.server 8000 http://localhost:8000
   var total_width = 1500, total_height = 720;
   var margin = {top: 40, right: 20, bottom: 20, left: 20}, left_space = 100, top_space = 0;
   var width = 0.9 * (total_width - margin.left - margin.right) / 2, height = 0.9 * (total_height - margin.top - margin.bottom);
