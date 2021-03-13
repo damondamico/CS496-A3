@@ -6,6 +6,7 @@
 
 <body>
   <link href="styles.css" rel="stylesheet">
+  <p style="font-family:verdana">Data filtering:</p>
   <div class="dropdown1">
     <button class="dropbtn1">Release Year</button>
     <div class="dropdown-content1">
@@ -17,6 +18,7 @@
       <a onclick="filter_plots(1, 2008)">2008</a>
     </div>
   </div>
+  <br>
   <div class="dropdown2">
     <button class="dropbtn2">Publisher</button>
     <div class="dropdown-content2">
@@ -41,6 +43,7 @@
       <a onclick="filter_plots(2, 'Atari')">Atari</a>
     </div>
   </div>
+  <br>
   <div class="dropdown3">
     <button class="dropbtn3">Genre</button>
     <div class="dropdown-content3">
@@ -55,6 +58,7 @@
       <a onclick="filter_plots(3, 'Adventure')">Adventure</a>
     </div>
   </div>
+  <br>
   <div class="dropdown4">
     <button class="dropbtn4">Release Console</button>
     <div class="dropdown-content4">
@@ -66,6 +70,7 @@
       <a onclick="filter_plots(4, 'X360')">Xbox 360</a>
     </div>
   </div>
+  <br>
   <div class="dropdown5">
     <button class="dropbtn5">Rating</button>
     <div class="dropdown-content5">
@@ -77,19 +82,18 @@
   </div>
 
   <svg></svg>
+
+  <p style="font-family:verdana">Set X-Axis Variable:</p>
+  <div class="xbuttons">
+    <INPUT class="button1" TYPE="Button" value="Average Play Time" onclick="new_feature_to_plot(1)"/>
+    <INPUT class="button2" TYPE="Button" value="Used Price" onclick="new_feature_to_plot(2)"/>
+    <INPUT class="button3" TYPE="Button" value="Genre" onclick="new_feature_to_plot(3)"/>
+    <INPUT class="button4" TYPE="Button" value="Publisher" onclick="new_feature_to_plot(4)"/>
+    <INPUT class="button5" TYPE="Button" value="Platform" onclick="new_feature_to_plot(5)"/>
+  </div>
 </body>
 
 <script src="http://d3js.org/d3.v6.min.js"></script>
-
-<FORM id = 'x buttons'>
-  <label for="x buttons">Set X-Axis Variable:</label>
-  <br>
-  <INPUT TYPE="Button" value="Average Play Time" onclick="new_feature_to_plot(1)"/>
-  <INPUT TYPE="Button" value="Used Price" onclick="new_feature_to_plot(2)"/>
-  <INPUT TYPE="Button" value="Genre" onclick="new_feature_to_plot(3)"/>
-  <INPUT TYPE="Button" value="Publisher" onclick="new_feature_to_plot(4)"/>
-  <INPUT TYPE="Button" value="Platform" onclick="new_feature_to_plot(5)"/>
-</FORM>
 
 <script>
   //Server Stuff: python -m http.server 8000 http://localhost:8000

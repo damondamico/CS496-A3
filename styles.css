@@ -2,7 +2,12 @@
 svg {
     width: 1500px;
     height: 720px;
+    font-family : verdana;
+    position: absolute;
+    left: 180px;
+    top: 0px;
   }
+
 
 .dropbtn1 {
   background-color: #4CAF50;
@@ -10,10 +15,14 @@ svg {
   padding: 16px;
   font-size: 16px;
   border: none;
+  width: 100%;
 }
 .dropdown1 {
   position: relative;
   display: inline-block;
+  display: flex;
+  width: 160px;
+  top: 0px;
 }
 .dropdown-content1 {
   display: none;
@@ -39,10 +48,13 @@ svg {
   padding: 16px;
   font-size: 16px;
   border: none;
+  width: 100%;
 }
 .dropdown2 {
   position: relative;
   display: inline-block;
+  display: flex;
+  width: 160px;
 }
 .dropdown-content2 {
   display: none;
@@ -68,10 +80,13 @@ svg {
   padding: 16px;
   font-size: 16px;
   border: none;
+  width: 100%;
 }
 .dropdown3 {
   position: relative;
   display: inline-block;
+  display: flex;
+  width: 160px;
 }
 .dropdown-content3 {
   display: none;
@@ -97,10 +112,13 @@ svg {
   padding: 16px;
   font-size: 16px;
   border: none;
+  width: 100%;
 }
 .dropdown4 {
   position: relative;
   display: inline-block;
+  display: flex;
+  width: 160px;
 }
 .dropdown-content4 {
   display: none;
@@ -126,10 +144,13 @@ svg {
   padding: 16px;
   font-size: 16px;
   border: none;
+  width: 100%;
 }
 .dropdown5 {
   position: relative;
   display: inline-block;
+  display: flex;
+  width: 160px;
 }
 .dropdown-content5 {
   display: none;
@@ -148,3 +169,77 @@ svg {
 .dropdown-content5 a:hover {background-color: #ddd;}
 .dropdown5:hover .dropdown-content5 {display: block;}
 .dropdown5:hover .dropbtn5 {background-color: #3e8e41;}
+
+
+
+
+.xbuttons{
+  position: absolute;
+  top: 710px;
+  padding: 10px 0px;
+}
+
+.button1 {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
+
+.button1:hover {background-color: #3e8e41;}
+
+.button2 {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
+
+.button2:hover {background-color: #3e8e41;}
+
+.button3 {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
+
+.button3:hover {background-color: #3e8e41;}
+
+.button4 {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
+
+.button4:hover {background-color: #3e8e41;}
+
+.button5 {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
+
+.button5:hover {background-color: #3e8e41;}
