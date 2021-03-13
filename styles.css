@@ -173,9 +173,12 @@ svg {
 
 
 
-.xbuttons{
+
+
+
+.xbuttons {
   position: absolute;
-  top: 710px;
+  top: 650px;
   padding: 10px 0px;
 }
 
