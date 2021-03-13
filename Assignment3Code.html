@@ -109,7 +109,7 @@
   var all_publishers = ["Nintendo", "Rockstar", "Microsoft", "Activision", "Sony", "EA", "Ubisoft", "Disney", "2K", "Midway",
              "Sega", "Capcom", "THQ", "SquareEnix", "Konami", "Namco", "Eidos", "Atari"];
   var all_consoles = ["Nintendo DS", "Nintendo Wii", "Sony PSP", "PlayStation 3", "X360"];
-  var feature_mapping = {}, current_x_feature = 0, filtered_feature = -1, filtered_value = -1;
+  var feature_mapping = {}, current_x_feature = 0, filtered_feature = -1, filtered_value = -1, selected_points = [], linked_points = [];
   ready();
 
   async function ready() {
@@ -117,12 +117,16 @@
       data = await d3.json("videogame_data.json");
       split_data();
       feature_mapping = {1: playtime, 2: used_price, 3: genre_one, 4: publishers_one, 5: release_console}, current_x_feature = 1;
+      for (i=0; i<data.game.length; i++)
+      {
+        selected_points.push(i);
+      }
       //test
-      make_plot(svg_sales, game_titles, playtime, sales); 
-      make_plot(svg_reviewscores, game_titles, playtime, review_scores);
+      make_plot(svg_sales, playtime, sales); 
+      make_plot(svg_reviewscores, playtime, review_scores);
     }
 
-  function make_plot(svg_to_use, value_names, x_feature, y_feature) 
+  function make_plot(svg_to_use, x_feature, y_feature) 
   {
     var scaling = get_scaling(x_feature, y_feature);
     var xAxis = d3.axisBottom().scale(scaling.x); 
@@ -153,13 +157,14 @@
         .style("text-anchor", "middle")
         .text(labels[0] + ' vs. ' + labels[1]);
 
-    var dataset_to_use = make_dataset(value_names, x_feature, y_feature);
+    var dataset_to_use = make_dataset(x_feature, y_feature);
     svg_to_use.selectAll("circle") 
       .data(dataset_to_use)
       .enter().append("circle") 
           .attr("cx", function(d) { return scaling.x(d[1]); })
           .attr("cy", function(d) { return scaling.y(d[2]); })
-          .attr("r",  5)
+          .attr("r",  4)
+          .attr("fill", function(d) { return d[3]; })
           .on("mouseover", handleMouseOver)
           .on("mouseout", handleMouseOut)
           .on("click", handleMouseClick);     
@@ -170,87 +175,71 @@
     filter_plots(filtered_feature, filtered_value);
   }
 
-  function update_plots(new_names, new_feature, new_sales, new_scores){
+  function update_plots(){
     svg_sales.selectAll("*").remove();
     svg_reviewscores.selectAll("*").remove();
-    make_plot(svg_sales, new_names, new_feature, new_sales); 
-    make_plot(svg_reviewscores, new_names, new_feature, new_scores);
+    make_plot(svg_sales, feature_mapping[current_x_feature], sales); 
+    make_plot(svg_reviewscores, feature_mapping[current_x_feature], review_scores);
   }
 
   function filter_plots(filter_feature, values_to_keep)
   {
-    var filtered_name_feature = [];
-    var filtered_x_feature = [];
-    var filtered_sales_feature = [];
-    var filtered_scores_feature = [];
-    if (filter_feature == -1 || values_to_keep == -1) //Select all
+    filtered_feature = filter_feature;
+    filtered_value = values_to_keep;
+    selected_points.length = 0;
+    if (filtered_feature == -1 || filtered_value == -1) //Select all
     {
-      filtered_name_feature = game_titles;
-      filtered_x_feature = feature_mapping[current_x_feature];
-      filtered_sales_feature = sales;
-      filtered_scores_feature = review_scores;
+      for (i=0; i<data.game.length; i++)
+      {
+        selected_points.push(i);
+      }
     }
     else
     {
-      switch(filter_feature)
+      switch(filtered_feature)
       {
         case 1: //filter by release year
           for (i=0; i<data.game.length; i++)
           {
-            if (data.game[i].release_year == values_to_keep)
+            if (data.game[i].release_year == filtered_value)
             {
-              filtered_name_feature.push(game_titles[i]);
-              filtered_x_feature.push(feature_mapping[current_x_feature][i]);
-              filtered_sales_feature.push(sales[i]);
-              filtered_scores_feature.push(review_scores[i]);
+              selected_points.push(i);
             }
           }
           break;
         case 2: //filter by publisher
           for (i=0; i<data.game.length; i++)
           {
-            if (data.game[i].publishers_one == values_to_keep)
+            if (data.game[i].publishers_one == filtered_value)
             {
-              filtered_name_feature.push(game_titles[i]);
-              filtered_x_feature.push(feature_mapping[current_x_feature][i]);
-              filtered_sales_feature.push(sales[i]);
-              filtered_scores_feature.push(review_scores[i]);
+              selected_points.push(i);
             }
           }
           break;
         case 3: //filter by genre
           for (i=0; i<data.game.length; i++)
           {
-            if (data.game[i].genre_one == values_to_keep)
+            if (data.game[i].genre_one == filtered_value)
             {
-              filtered_name_feature.push(game_titles[i]);
-              filtered_x_feature.push(feature_mapping[current_x_feature][i]);
-              filtered_sales_feature.push(sales[i]);
-              filtered_scores_feature.push(review_scores[i]);
+              selected_points.push(i);
             }
           }
           break;
         case 4: //filter by release console
           for (i=0; i<data.game.length; i++)
           {
-            if (data.game[i].release_console == values_to_keep)
+            if (data.game[i].release_console == filtered_value)
             {
-              filtered_name_feature.push(game_titles[i]);
-              filtered_x_feature.push(feature_mapping[current_x_feature][i]);
-              filtered_sales_feature.push(sales[i]);
-              filtered_scores_feature.push(review_scores[i]);
+              selected_points.push(i);
             }
           }
           break;
         case 5: //filter by rating
           for (i=0; i<data.game.length; i++)
           {
-            if (data.game[i].rating == values_to_keep)
+            if (data.game[i].rating == filtered_value)
             {
-              filtered_name_feature.push(game_titles[i]);
-              filtered_x_feature.push(feature_mapping[current_x_feature][i]);
-              filtered_sales_feature.push(sales[i]);
-              filtered_scores_feature.push(review_scores[i]);
+              selected_points.push(i);
             }
           }
           break;
@@ -258,17 +247,20 @@
           break;
       }
     }
-    filtered_feature = filter_feature;
-    filtered_value = values_to_keep;
-    update_plots(filtered_name_feature, filtered_x_feature, filtered_sales_feature, filtered_scores_feature);
+    update_plots();
   }
 
-  function get_scaling(x_feature, y_feature)
+  function get_scaling(x_values, y_values)
   {
-    /*var base_scaling = (d3.max(x_feature) > d3.max(y_feature) ? width / d3.max(x_feature) : height / d3.max(y_feature));
-    var new_width = d3.max(x_feature) * base_scaling;
-    var new_height = d3.max(y_feature) * base_scaling;*/
-
+    var x_feature = [], y_feature = [];
+    for (i=0; i<data.game.length; i++)
+    {
+      if (selected_points.indexOf(i) != -1)
+      {
+        x_feature.push(x_values[i]);
+        y_feature.push(y_values[i]);
+      }
+    }
     //Get correct scaling for the given feature
     switch(current_x_feature)
     {
@@ -319,12 +311,16 @@
     return {x: xScale, y: yScale};
   }
 
-  function make_dataset(names, x_feature, y_feature)
+  function make_dataset(x_feature, y_feature)
   {
     var dataset = []
     for (i=0; i<x_feature.length; i++)
     {
-      dataset.push([names[i], x_feature[i], y_feature[i]]);
+      if (selected_points.indexOf(i) != -1)
+      {
+        var point_color = (linked_points.indexOf(i) != -1) ? "blue" : "black";
+        dataset.push([game_titles[i], x_feature[i], y_feature[i], point_color, i]);
+      }
     }
     return dataset;
   }
@@ -433,11 +429,25 @@
 
   function handleMouseOut(d, i) {
     d3.select(this)
-    .attr("fill", "black");
+    .attr("fill", function(d) 
+      { 
+        return d[3]; 
+      });
   }
 
   function handleMouseClick(d, i){
-    console.log("Click test");
+    d3.select(this)
+    .attr("fill", function(d) 
+      { 
+        d[3] = "blue";
+        linked_points.push(d[4]);
+        return d[3]; 
+      });
+  }
+
+  function resetLinking(){
+    linked_points.length = 0;
+    new_feature_to_plot(current_x_feature);
   }
 
 </script>
