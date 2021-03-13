@@ -5,7 +5,7 @@
 </style>
 
 <body>
-  <link href="styles.css" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" type="text/css">
   <p style="font-family:verdana">Data filtering:</p>
   <div class="dropdown1">
     <button class="dropbtn1">Release Year</button>
@@ -97,8 +97,8 @@
 
 <script>
   //Server Stuff: python -m http.server 8000 http://localhost:8000
-  var total_width = 1500, total_height = 720;
-  var margin = {top: 40, right: 20, bottom: 20, left: 20}, left_space = 100, top_space = 0;
+  var total_width = 1450, total_height = 720;
+  var margin = {top: 40, right: 30, bottom: 20, left: 35}, left_space = 40, top_space = 0;
   var width = 0.9 * (total_width - margin.left - margin.right) / 2, height = 0.9 * (total_height - margin.top - margin.bottom);
   var svg_sales = d3.select("svg").append("g").attr("transform", "translate(" + (left_space + margin.left) + "," + (top_space + margin.top) + ")");
   var svg_reviewscores = d3.select("svg").append("g").attr("transform", "translate(" + (left_space + margin.left + width + margin.right + margin.left) + "," + (top_space + margin.top) + ")");
