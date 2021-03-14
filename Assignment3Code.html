@@ -113,6 +113,7 @@
              "Sega", "Capcom", "THQ", "SquareEnix", "Konami", "Namco", "Eidos", "Atari"];
   var all_consoles = ["Nintendo DS", "Nintendo Wii", "Sony PSP", "PlayStation 3", "X360"];
   var feature_mapping = {}, current_x_feature = 0, filtered_feature = -1, filtered_value = -1, selected_points = [], linked_points = [];
+  var unlinked_color = "black", linked_color = "#c49700";
   ready();
 
   async function ready() {
@@ -321,7 +322,7 @@
     {
       if (selected_points.indexOf(i) != -1)
       {
-        var point_color = (linked_points.indexOf(i) != -1) ? "blue" : "black";
+        var point_color = (linked_points.indexOf(i) != -1) ? linked_color : unlinked_color;
         dataset.push([game_titles[i], x_feature[i], y_feature[i], point_color, i]);
       }
     }
@@ -442,7 +443,7 @@
     d3.select(this)
     .attr("fill", function(d) 
       { 
-        d[3] = "green";
+        d[3] = linked_color;
         linked_points.push(d[4]);
         return d[3]; 
       });
