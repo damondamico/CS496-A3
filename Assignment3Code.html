@@ -49,7 +49,7 @@
     <div class="dropdown-content3">
       <a onclick="filter_plots(3, -1)">All</a>
       <a onclick="filter_plots(3, 'Simulation')">Simulation</a>
-      <a onclick="filter_plots(3, 'Racing / Driving')">Racing / Drivingn</a>
+      <a onclick="filter_plots(3, 'Racing / Driving')">Racing / Driving</a>
       <a onclick="filter_plots(3, 'Role-Playing (RPG)')">Role-Playing (RPG)</a>
       <a onclick="filter_plots(3, 'Action')">Action</a>
       <a onclick="filter_plots(3, 'Sports')">Sports</a>
@@ -67,7 +67,7 @@
       <a onclick="filter_plots(4, 'Nintendo Wii')">Nintendo Wii</a>
       <a onclick="filter_plots(4, 'Sony PSP')">Sony PSP</a>
       <a onclick="filter_plots(4, 'PlayStation 3')">PlayStation 3</a>
-      <a onclick="filter_plots(4, 'X360')">Xbox 360</a>
+      <a onclick="filter_plots(4, 'Xbox 360')">Xbox 360</a>
     </div>
   </div>
   <br>
@@ -111,14 +111,14 @@
   var all_genres = ["Simulation", "Racing / Driving", "Role-Playing (RPG)", "Action", "Sports", "Educational", "Strategy", "Adventure"];
   var all_publishers = ["Nintendo", "Rockstar", "Microsoft", "Activision", "Sony", "EA", "Ubisoft", "Disney", "2K", "Midway",
              "Sega", "Capcom", "THQ", "SquareEnix", "Konami", "Namco", "Eidos", "Atari"];
-  var all_consoles = ["Nintendo DS", "Nintendo Wii", "Sony PSP", "PlayStation 3", "X360"];
+  var all_consoles = ["Nintendo DS", "Nintendo Wii", "Sony PSP", "PlayStation 3", "Xbox 360"];
   var feature_mapping = {}, current_x_feature = 0, filtered_feature = -1, filtered_value = -1, selected_points = [], linked_points = [];
   var unlinked_color = "black", linked_color = "#c49700";
   ready();
 
   async function ready() {
       // load files async; store the values so we can use them later
-      data = await d3.json("videogame_data.json");
+      data = await d3.json("vg_data.json");
       split_data();
       feature_mapping = {1: playtime, 2: used_price, 3: genre_one, 4: publishers_one, 5: release_console}, current_x_feature = 1;
       for (i=0; i<data.game.length; i++)
