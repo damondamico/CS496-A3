@@ -1,2 +1,2 @@
 # CS496-A3
-change
+To run this visualization application, first make sure all files are in the same directory. Then, open navigate to this directory and open a web server. We used python for this, by navigating to the directory in the terminal and running the command "python3 -m http.server"
